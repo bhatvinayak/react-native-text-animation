@@ -1,0 +1,50 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+build/
+dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+
+# React Native specific files
+android/.gradle/
+android/app/build/
+android/local.properties
+ios/Pods/
+ios/build/
+ios/*.xcodeproj/project.xcworkspace/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/xcshareddata/
+
+# Testing
+coverage/
+*.log
+jest-test-results.json
+
+# Expo files (if using Expo for testing)
+.expo/
+.expo-shared/
+
+# Package lock files (if you're not using a specific lock system across teams)
+# Uncomment the one you're not using
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml

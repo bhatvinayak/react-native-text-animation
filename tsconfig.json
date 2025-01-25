@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    // **General Options**
+    "target": "ES5",                   // Ensures broad compatibility for JS output
+    "module": "CommonJS",              // CommonJS for Node.js/npm packages
+    "lib": ["DOM", "ES2015"],          // Supports React and modern JavaScript features
+    "jsx": "react",                    // Enables React JSX transformation
+    "declaration": true,               // Generate .d.ts files for typings
+    "declarationMap": true,            // Map .d.ts files to source for debugging
+    "sourceMap": true,                 // Generate source maps for debugging
+
+    // **Paths & Module Resolution**
+    "outDir": "./dist",                // Output compiled files to the dist folder
+    "rootDir": "./src",                // Source files directory
+    "moduleResolution": "node",        // Resolves node_modules for React Native
+
+    // **Type Checking**
+    "strict": true,                    // Enable all strict type-checking options
+    "esModuleInterop": true,           // Allow default imports for CommonJS modules
+    "allowSyntheticDefaultImports": true, // Allows default imports for compatibility
+    "skipLibCheck": true,              // Skip type checking for third-party libraries
+
+    // **React-Native Specific**
+    "resolveJsonModule": true,         // Allows importing .json files
+    "allowJs": true,                   // Allows JS files if needed
+    "isolatedModules": true,           // Required for React Native
+    "noEmit": false                    // Emit compiled files to dist
+  },
+  "include": [
+    "src"                         // Include all files in the src folder
+  ],
+  "exclude": [
+    "node_modules",                    // Exclude node_modules
+    "dist",                            // Exclude dist folder
+    "example",                         // Exclude example/test app
+    "**/*.test.ts", "**/*.test.tsx"    // Exclude test files
+  ]
+}

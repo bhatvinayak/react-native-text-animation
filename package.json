@@ -1,6 +1,6 @@
 {
   "name": "react-native-text-animation",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Simple component for text animation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,6 +10,8 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
+    "publish": "npm publish",
+    "publish-beta": "npm publish --tag beta",
     "test": "jest"
   },
   "author": "B G Vinayak",

@@ -4,7 +4,7 @@
 
 ## Features
 
-- **Animation Types**: Fade-in, fade-out, and none.
+- **Animation Types**: Fade-in, fade-out and many more.
 - **Customizable Styles**: Apply custom text and container styles.
 - **Control Animation Timing**: Set duration, starting delay, and cooldown buffer.
 
@@ -39,6 +39,8 @@ import AnimatedText from 'react-native-animated-text';
 - **animationType**: Animation to apply (e.g., 'fade-in', 'fade-out', 'none').
 - **duration**: Duration of the animation (in milliseconds).
 - **startingDelay:** Delay before starting the animation (in milliseconds).
+- **slideDistance:** Distance for slide animations.
+- **zoomScale:** Scale for zoom animations.
 - **iterations**: How many times the animation should repeat.
 - **buffer**: Cooldown between animation iterations.
 

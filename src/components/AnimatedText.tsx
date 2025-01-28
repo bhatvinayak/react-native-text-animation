@@ -12,6 +12,8 @@ type AnimatedTextProps = {
   zoomScale?: number; // Scale for zoom animations
   iterations?: number; // Number of times to repeat the animation
   buffer?: number; // Cooldown between iterations
+  rotationDegrees?: number; // Degrees for rotation animations
+  bounceHeight?: number; // Height for bounce animations
 };
 
 type AnimationType =
@@ -22,6 +24,10 @@ type AnimationType =
   | "slide-left"
   | "slide-right"
   | "zoom"
+  | "bounce"
+  | "rotate"
+  | "flip-horizontal"
+  | "flip-vertical"
   | "none";
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
@@ -31,20 +37,115 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   animationType = "none",
   duration = 1000,
   startingDelay = 0,
-  slideDistance = 0,
-  zoomScale = 1,
+  slideDistance = 50,
+  zoomScale = 1.5,
   iterations = Infinity,
   buffer = 0,
+  rotationDegrees = 360,
+  bounceHeight = 20,
 }) => {
-  const animationValue = useRef(
-    new Animated.Value(animationType === "fade-out" ? 1 : 0)
-  ).current; // For fade animations
+  const animationValue = useRef(new Animated.Value(0)).current; // For fade, zoom, and bounce animations
   const translateXValue = useRef(new Animated.Value(0)).current; // For horizontal slide animations
   const translateYValue = useRef(new Animated.Value(0)).current; // For vertical slide animations
   const scaleValue = useRef(new Animated.Value(1)).current; // For zoom animations
+  const rotateValue = useRef(new Animated.Value(0)).current; // For rotation animations
+
+  // Animation configuration object
+  const animationConfig: Record<
+    AnimationType,
+    { animation: Animated.CompositeAnimation | undefined }
+  > = {
+    "fade-in": {
+      animation: Animated.timing(animationValue, {
+        toValue: 1,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "fade-out": {
+      animation: Animated.timing(animationValue, {
+        toValue: 0,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "slide-up": {
+      animation: Animated.timing(translateYValue, {
+        toValue: -slideDistance,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "slide-down": {
+      animation: Animated.timing(translateYValue, {
+        toValue: slideDistance,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "slide-left": {
+      animation: Animated.timing(translateXValue, {
+        toValue: -slideDistance,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "slide-right": {
+      animation: Animated.timing(translateXValue, {
+        toValue: slideDistance,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    zoom: {
+      animation: Animated.timing(scaleValue, {
+        toValue: zoomScale,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    bounce: {
+      animation: Animated.sequence([
+        Animated.timing(translateYValue, {
+          toValue: -bounceHeight,
+          duration: duration / 2,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateYValue, {
+          toValue: 0,
+          duration: duration / 2,
+          useNativeDriver: true,
+        }),
+      ]),
+    },
+    rotate: {
+      animation: Animated.timing(rotateValue, {
+        toValue: rotationDegrees,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "flip-horizontal": {
+      animation: Animated.timing(rotateValue, {
+        toValue: 180,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    "flip-vertical": {
+      animation: Animated.timing(rotateValue, {
+        toValue: 90,
+        duration,
+        useNativeDriver: true,
+      }),
+    },
+    none: {
+      animation: undefined, // No animation for "none"
+    },
+  };
 
   useEffect(() => {
-    const animation = getAnimation(animationType, duration);
+    const animation = animationConfig[animationType].animation;
 
     if (animation) {
       Animated.sequence([
@@ -62,73 +163,17 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     }
   }, [animationType, duration, startingDelay, iterations]);
 
-  const getAnimation = (type: AnimationType, duration: number) => {
-    switch (type) {
-      case "fade-in":
-        return Animated.timing(animationValue, {
-          toValue: 1,
-          duration,
-          useNativeDriver: true,
-        });
-      case "fade-out":
-        return Animated.timing(animationValue, {
-          toValue: 0,
-          duration,
-          useNativeDriver: true,
-        });
-      case "slide-up":
-        return Animated.timing(translateYValue, {
-          toValue: -slideDistance, // Adjust this value as needed
-          duration,
-          useNativeDriver: true,
-        });
-      case "slide-down":
-        return Animated.timing(translateYValue, {
-          toValue: slideDistance, // Adjust this value as needed
-          duration,
-          useNativeDriver: true,
-        });
-      case "slide-left":
-        return Animated.timing(translateXValue, {
-          toValue: -slideDistance, // Adjust this value as needed
-          duration,
-          useNativeDriver: true,
-        });
-      case "slide-right":
-        return Animated.timing(translateXValue, {
-          toValue: slideDistance, // Adjust this value as needed
-          duration,
-          useNativeDriver: true,
-        });
-      case "zoom":
-        return Animated.timing(scaleValue, {
-          toValue: zoomScale,
-          duration,
-          useNativeDriver: true,
-        });
-
-      default:
-        return undefined;
-    }
-  };
-
   const animationStyles = {
     transform: [
+      { translateY: translateYValue },
+      { translateX: translateXValue },
+      { scale: scaleValue },
       {
-        translateY:
-          animationType.includes("slide-up") ||
-          animationType.includes("slide-down")
-            ? translateYValue
-            : 0,
+        rotate: rotateValue.interpolate({
+          inputRange: [0, 360],
+          outputRange: ["0deg", "360deg"],
+        }),
       },
-      {
-        translateX:
-          animationType.includes("slide-right") ||
-          animationType.includes("slide-left")
-            ? translateXValue
-            : 0,
-      },
-      { scale: animationType === "zoom" ? scaleValue : 1 },
     ],
   };
 
